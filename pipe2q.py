@@ -8,6 +8,7 @@ import time
 import sys
 import argparse
 from tempfile import NamedTemporaryFile
+import os
 
 def main():
 
