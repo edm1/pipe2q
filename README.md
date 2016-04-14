@@ -61,13 +61,17 @@ However, its useful for building and submitting complex commands to the queue on
 ```
 # For each bed file
 for bedfile in *.bed,gz; do
+
     # Create output name
     outfile=output/$(basename $bedfile)
+
     # Unzip
     # Find overlaps with regulatory elements
     # Sort the BED file
     # Gzip and save result
     # N.B. the whole command must inside "" and echo'ed
     echo "zcat $bedfile | bedtools intersect -wa -A regulatory_elements.bed.gz -B - | sort-bed | gzip -c > $outfile"
-done | pipe2q --wt 00:01:00:00 -proc 1
+
+# Pipe the echoed commands to pipe2q
+done | pipe2q --wt 00:01:00:00 -procs 1
 ```
