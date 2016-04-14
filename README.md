@@ -1,49 +1,6 @@
 # pipe2q
 Script to pipe commands to the PBS queue
 
-## Installation
-
-#### Clone repository
-You can either clone the git repository or copy the `pipe2q.py` script into your home directory. To clone the repository into ~/programs:
-
-```bash
-# Make programs directory if it doesn't exist, then change to directory
-mkdir -p ~/programs
-cd ~/programs
-# Clone the repository
-git clone https://github.com/edm1/pipe2q.git
-```
-
-#### Add pipe2q to local bin
-You can add `pipe2q` to your local bin so that it can be called directly, rather than with `python ~/programs/pipe2q/pipe2q.py`
-
-```bash
-# Make ~/bin directory if it doesn't exist, then change to directory
-mkdir -p ~/bin
-cd ~/bin
-# Add symbolic link to pipe2q
-ln -s ~/programs/pipe2q/pipe2q.py pipe2q
-hash
-```
-
-####  Add local bin to $PATH
-For this to work, `~/bin` will have to be in your `$PATH`. If it is not already, you can add it to your `~/.bashrc` file:
-
-```bash
-# Make backup
-cp ~/.bashrc ~/.bashrc.backup
-# Add ~/bin to $PATH
-echo export PATH=$HOME/bin:$PATH >> ~/.bashrc
-source ~/.bashrc
-```
-
-####  Updating
-```bash
-# Change to pipe2q repository and run git pull
-cd ~/programs/pipe2q
-git pull
-```
-
 ## Usage
 
 ```
@@ -96,4 +53,47 @@ for bedfile in *.bed.gz; do
 
 # Pipe the echoed commands to pipe2q
 done | pipe2q --wt 00:01:00:00 --procs 1
+```
+
+## Installation
+
+#### Clone repository
+You can either clone the git repository or copy the `pipe2q.py` script into your home directory. To clone the repository into ~/programs:
+
+```bash
+# Make programs directory if it doesn't exist, then change to directory
+mkdir -p ~/programs
+cd ~/programs
+# Clone the repository
+git clone https://github.com/edm1/pipe2q.git
+```
+
+#### Add pipe2q to local bin
+You can add `pipe2q` to your local bin so that it can be called directly, rather than with `python ~/programs/pipe2q/pipe2q.py`
+
+```bash
+# Make ~/bin directory if it doesn't exist, then change to directory
+mkdir -p ~/bin
+cd ~/bin
+# Add symbolic link to pipe2q
+ln -s ~/programs/pipe2q/pipe2q.py pipe2q
+hash
+```
+
+####  Add local bin to $PATH
+For this to work, `~/bin` will have to be in your `$PATH`. If it is not already, you can add it to your `~/.bashrc` file:
+
+```bash
+# Make backup
+cp ~/.bashrc ~/.bashrc.backup
+# Add ~/bin to $PATH
+echo export PATH=$HOME/bin:$PATH >> ~/.bashrc
+source ~/.bashrc
+```
+
+####  Updating
+```bash
+# Change to pipe2q repository and run git pull
+cd ~/programs/pipe2q
+git pull
 ```
