@@ -11,6 +11,7 @@ mkdir -p ~/programs
 cd ~/programs
 # Clone the repository
 git clone https://github.com/edm1/pipe2q.git
+
 # Make ~/bin directory if it doesn't exist, then change to directory
 mkdir -p ~/bin
 cd ~/bin
