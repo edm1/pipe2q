@@ -17,16 +17,27 @@ def main():
     # Parse walltime
     wt = parse_walltime(args.wt)
 
-    # If there is something in the standard input, isatty() will be False
-    if not sys.stdin.isatty():
-        # For each line in stdin, submit job
-        for line in sys.stdin:
-            cmd = line.rstrip()
-            qsub(cmd, procs=args.procs, wt=wt, name=args.n, istest=args.testq)
-    else:
-        sys.exit("Standard input is required. For usage see: pipe2q -h")
+    # Run commands using qsub
+    for cmds in chunks(list(yield_commands()), args.batch):
+        qsub(cmds, procs=args.procs, wt=wt, name=args.n, istest=args.testq)
 
     return 0
+
+def yield_commands():
+    """ Parse commands from the stdin and yield one at a time
+    """
+    # isatty() will be False if stdin not empty
+    if not sys.stdin.isatty():
+        for line in sys.stdin:
+            yield line.rstrip()
+    else:
+        # Return warning if stdin empty
+        sys.exit("ERROR: Standard input is required. For usage see: pipe2q -h")
+
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i+n]
 
 def parse_walltime(wt_arg):
     """ Converts walltimes to format dd:hh:mm:ss.
@@ -59,6 +70,11 @@ def parse_arguments():
         required=False,
         default=1,
         type=int)
+    parser.add_argument('--batch', metavar="<int>",
+        help=('Group commands into batches of this size. (default: 1)'),
+        required=False,
+        default=1,
+        type=int)
     parser.add_argument('--n', metavar="<str>",
         help=('Name of job. Prefix n-* will be added.'),
         required=False,
@@ -73,7 +89,7 @@ def parse_arguments():
     # Parse the arguments
     return args
 
-def qsub(cmd, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
+def qsub(cmd_list, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
     """ Submit a command to the cluster.
     """
 
@@ -96,8 +112,8 @@ def qsub(cmd, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
     # Change to working dir
     tf.write("\nif [ ! -z ${PBS_O_WORKDIR+x} ]; then\ncd $PBS_O_WORKDIR\nfi\n")
 
-    # Add the command
-    tf.write("\n{0}\n".format(cmd))
+    # Add commands
+    tf.write("\n{0}\n".format("\n".join(cmd_list)))
 
     # Close tempfile
     tf.close()
@@ -106,6 +122,7 @@ def qsub(cmd, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
     # Sleep
     time.sleep(1)
     # Remove temp file
+    # print tf.name
     os.remove(tf.name)
 
     return 0

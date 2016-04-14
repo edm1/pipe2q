@@ -5,7 +5,7 @@ Script to pipe commands to the PBS queue
 
 You can either clone the git repository or copy the pipe2q.py script into your home directory. For example, to clone the repository in a folder called 'programs' then add a link in your local bin, you could:
 
-```
+```bash
 # Make programs directory if it doesn't exist, then change to directory
 mkdir -p ~/programs
 cd ~/programs
@@ -22,7 +22,7 @@ hash
 
 For this to work, `~/bin` will have to be in your `$PATH`. If its not, you can add it to your `~/.bashrc` file:
 
-```
+```bash
 # Make backup
 cp ~/.bashrc ~/.bashrc.backup
 # Add ~/bin to $PATH
@@ -52,7 +52,7 @@ optional arguments:
 
 pipe2q takes the stdin as input. In the simplest case, you could have a file containing a list of commands (e.g. commands.txt) and submit each job separately to the queue:
 
-```
+```bash
 # Submit each job separately to 1 processor for 1 hour
 cat commands.txt | pipe2q --wt 00:01:00:00 --procs 1
 # Or
@@ -61,7 +61,7 @@ pipe2q --wt 00:01:00:00 --procs 1 < commands.txt
 
 However, its useful for building and submitting complex commands to the queue on the fly. Eg:
 
-```
+```bash
 # For each bed file
 for bedfile in *.bed.gz; do
 
