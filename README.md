@@ -73,5 +73,5 @@ for bedfile in *.bed.gz; do
     echo "zcat $bedfile | bedtools intersect -wa -A regulatory_elements.bed.gz -B - | sort-bed | gzip -c > $outfile"
 
 # Pipe the echoed commands to pipe2q
-done | pipe2q --wt 00:01:00:00 -procs 1
+done | pipe2q --wt 00:01:00:00 --procs 1
 ```
