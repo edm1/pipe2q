@@ -94,6 +94,9 @@ def qsub(cmd, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
         if istest:
             tf.write("#PBS -q testq\n")
 
+        # Change to working dir
+        tf.write("\nif [ ! -z ${PBS_O_WORKDIR+x} ]; then\ncd $PBS_O_WORKDIR\nfi\n")
+
         # Add the command
         tf.write("\n{0}\n".format(cmd))
 
