@@ -60,7 +60,7 @@ However, its useful for building and submitting complex commands to the queue on
 
 ```
 # For each bed file
-for bedfile in *.bed,gz; do
+for bedfile in *.bed.gz; do
 
     # Create output name
     outfile=output/$(basename $bedfile)
