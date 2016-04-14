@@ -103,7 +103,6 @@ def qsub(cmd, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
     tf.close()
     # Submit
     subprocess.call("qsub {0}".format(tf.name), shell=True)
-    print tf.name
     # Sleep
     time.sleep(1)
     # Remove temp file
