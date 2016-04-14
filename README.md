@@ -54,6 +54,8 @@ pipe2q takes the stdin as input. In the simplest case, you could have a file con
 ```
 # Submit each job separately to 1 processor for 1 hour
 cat commands.txt | pipe2q --wt 00:01:00:00 --procs 1
+# Or
+pipe2q --wt 00:01:00:00 --procs 1 < commands.txt
 ```
 
 However, its useful for building and submitting complex commands to the queue on the fly. Eg:
