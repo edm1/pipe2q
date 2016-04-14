@@ -3,7 +3,8 @@ Script to pipe commands to the PBS queue
 
 ## Installation
 
-You can either clone the git repository or copy the pipe2q.py script into your home directory. For example, to clone the repository in a folder called 'programs' then add a link in your local bin, you could:
+#### Clone repository
+You can either clone the git repository or copy the `pipe2q.py` script into your home directory. To clone the repository into ~/programs:
 
 ```bash
 # Make programs directory if it doesn't exist, then change to directory
@@ -11,7 +12,12 @@ mkdir -p ~/programs
 cd ~/programs
 # Clone the repository
 git clone https://github.com/edm1/pipe2q.git
+```
 
+#### Add pipe2q to local bin
+You can add `pipe2q` to your local bin so that it can be called directly, rather than with `python ~/programs/pipe2q/pipe2q.py`
+
+```bash
 # Make ~/bin directory if it doesn't exist, then change to directory
 mkdir -p ~/bin
 cd ~/bin
@@ -20,7 +26,8 @@ ln -s ~/programs/pipe2q/pipe2q.py pipe2q
 hash
 ```
 
-For this to work, `~/bin` will have to be in your `$PATH`. If its not, you can add it to your `~/.bashrc` file:
+####  Add local bin to $PATH
+For this to work, `~/bin` will have to be in your `$PATH`. If it is not already, you can add it to your `~/.bashrc` file:
 
 ```bash
 # Make backup
@@ -30,6 +37,12 @@ echo export PATH=$HOME/bin:$PATH >> ~/.bashrc
 source ~/.bashrc
 ```
 
+####  Updating
+```bash
+# Change to pipe2q repository and run git pull
+cd ~/programs/pipe2q
+git pull
+```
 
 ## Usage
 
@@ -41,25 +54,31 @@ usage: cat commands.txt | pipe2q [options]
 Pipe jobs to the queue
 
 optional arguments:
- -h, --help          show this help message and exit
- --wt <dd:hh:mm:ss>  Specify amount of walltime. E.g. 10:00 (is 10 min),
-                     10:00:00 (is 10 hours), 10:00:00:00 (is 10 days).
- --procs <int>       Number of processors (default: 1)
- --n <str>           Name of job. Prefix n-* will be added.
- --testq             Add commands to the test queue.
-
+  -h, --help          show this help message and exit
+  --wt <dd:hh:mm:ss>  Specify amount of walltime. E.g. 10:00 (is 10 min),
+                      10:00:00 (is 10 hours), 10:00:00:00 (is 10 days).
+  --procs <int>       Number of processors (default: 1)
+  --batch <int>       Group commands into batches of this size. Commands will be ran sequentially. (default: 1)
+  --n <str>           Name of job. Prefix n-* will be added.
+  --testq             Add commands to the test queue.
 ```
 
-pipe2q takes the stdin as input. In the simplest case, you could have a file containing a list of commands (e.g. commands.txt) and submit each job separately to the queue:
+## Examples
+
+pipe2q takes the stdin as input.
+
+#### Simple case
+Sending list of commands from a text file to individual jobs:
 
 ```bash
-# Submit each job separately to 1 processor for 1 hour
+# Submit each line as a separate job to 1 processor for 1 hour
 cat commands.txt | pipe2q --wt 00:01:00:00 --procs 1
 # Or
 pipe2q --wt 00:01:00:00 --procs 1 < commands.txt
 ```
 
-However, its useful for building and submitting complex commands to the queue on the fly. Eg:
+#### Complex case
+However, its much more useful when building and submitting complex commands to the queue on the fly. Eg.
 
 ```bash
 # For each bed file
@@ -73,7 +92,7 @@ for bedfile in *.bed.gz; do
     # Sort the BED file
     # Gzip and save result
     # N.B. the whole command must inside "" and echo'ed
-    echo "zcat $bedfile | bedtools intersect -wa -A regulatory_elements.bed.gz -B - | sort-bed | gzip -c > $outfile"
+    echo "zcat $bedfile | bedtools intersect -wb -A regulatory_elements.bed.gz -B - | sort-bed | gzip -c > $outfile"
 
 # Pipe the echoed commands to pipe2q
 done | pipe2q --wt 00:01:00:00 --procs 1
