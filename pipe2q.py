@@ -77,33 +77,36 @@ def qsub(cmd, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
     """
 
     # Open a tempory file and write contents
-    with NamedTemporaryFile(delete=False) as tf:
+    tf = NamedTemporaryFile(delete=False)
 
-        print tf.name
+    # Write shebang
+    tf.write("#!/bin/sh\n")
+    # Nodes and proc
+    tf.write("#PBS -l nodes={0}:ppn={1}\n".format(nodes, procs))
+    # Walltime
+    tf.write("#PBS -l walltime={0}\n".format(wt))
+    # Name
+    if name:
+        tf.write("#PBS -N n-{0}\n".format(name))
+    # If test add to testq
+    if istest:
+        tf.write("#PBS -q testq\n")
 
-        # Write shebang
-        tf.write("#!/bin/sh\n")
-        # Nodes and proc
-        tf.write("#PBS -l nodes={0}:ppn={1}\n".format(nodes, procs))
-        # Walltime
-        tf.write("#PBS -l walltime={0}\n".format(wt))
-        # Name
-        if name:
-            tf.write("#PBS -N n-{0}\n".format(name))
-        # If test add to testq
-        if istest:
-            tf.write("#PBS -q testq\n")
+    # Change to working dir
+    tf.write("\nif [ ! -z ${PBS_O_WORKDIR+x} ]; then\ncd $PBS_O_WORKDIR\nfi\n")
 
-        # Change to working dir
-        tf.write("\nif [ ! -z ${PBS_O_WORKDIR+x} ]; then\ncd $PBS_O_WORKDIR\nfi\n")
+    # Add the command
+    tf.write("\n{0}\n".format(cmd))
 
-        # Add the command
-        tf.write("\n{0}\n".format(cmd))
-
-        # Submit
-        subprocess.call("qsub {0}".format(tf.name), shell=True)
-        # Sleep
-        time.sleep(1)
+    # Close tempfile
+    tf.close()
+    # Submit
+    subprocess.call("qsub {0}".format(tf.name), shell=True)
+    print tf.name
+    # Sleep
+    time.sleep(1)
+    # Remove temp file
+    os.remove(tf.name)
 
     return 0
 
