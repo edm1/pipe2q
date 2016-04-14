@@ -77,7 +77,7 @@ def qsub(cmd, nodes=1, procs=1, wt="00:00:10:00", name=None, istest=True):
     """
 
     # Open a tempory file and write contents
-    with NamedTemporaryFile(delete=True) as tf:
+    with NamedTemporaryFile(delete=False) as tf:
 
         print tf.name
 
